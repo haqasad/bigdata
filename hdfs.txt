@@ -1,0 +1,62 @@
+Notes for setting up HDFS on your Vagrant instance...
+
+$ source bigdata/init.sh
+
+$ vi hadoop/etc/hadoop/core-site.xml
+
+<configuration>
+  	<property>
+		<name>fs.defaultFS</name>
+		<value>hdfs://localhost:9000</value>
+  	</property>
+</configuration>
+
+$ vi hadoop/etc/hadoop/hdfs-site.xml
+
+<configuration>
+        <property>
+                <name>dfs.replication</name>
+                <value>1</value>
+        </property>
+</configuration>
+
+$ ssh localhost (needs password)
+
+$ ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa
+
+$ cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
+
+$ ssh localhost (no longer needs password)
+
+$ hadoop/bin/hdfs namenode -format
+
+$ hadoop/sbin/start-dfs.sh
+
+$ wget localhost:50070
+
+$ hadoop/bin/hdfs dfs -mkdir /user
+
+$ hadoop/bin/hdfs dfs -mkdir /user/vagrant
+
+$ hadoop/bin/hdfs dfs -put hadoop/etc/hadoop input
+
+$ hadoop/bin/hadoop jar\
+	hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar\
+	grep input output 'dfs[a-z.]+’
+
+$ hadoop/bin/hdfs dfs -get output output1
+
+$ cat output1/*
+
+-or-
+
+$ hadoop/bin/hdfs dfs -cat output/*
+
+$ hadoop/sbin/stop-dfs.sh
+
+A
+A
+A
+A
+
+
