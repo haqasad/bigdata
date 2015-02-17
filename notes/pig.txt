@@ -1,0 +1,66 @@
+PIG exercise
+
+$ mkdir ~/temp
+$ cd ~/temp
+
+Get latest version of Pig: 
+
+$ wget http://mirror.reverse.net/pub/apache/pig/pig-0.14.0/pig-0.14.0.tar.gz
+
+$ wget https://github.com/Orzota/tutorials/raw/master/Resources/BX-CSV-Dump.zip
+
+Unpack Pig:
+
+$ tar -xzvf pig-0.14.0.tar.gz
+
+$ mv pig-0.14.0 ~/pig
+
+<play around with init.sh> 
+
+$ pig
+
+(local mode)
+
+$ export PIG_CLASSPATH=$HADOOP_HOME/conf/
+
+$ pig
+
+â Local mode
+
+$ pig -x local BookXGroupByYear.pig
+
+â MapReduce mode
+
+$ pig -x mapreduce BookXGroupByYear.pig
+
+or
+
+$ pig BoocXGroupByYear.pig
+
+Unpack the book csv file
+
+$ sudo apt-get update
+$ sudo apt-get install unzip
+
+$ unzip BX*
+
+$ sed 's/\&amp;/\&/g' BX-Books.csv | sed -e '1d' |sed 's/;/$$$/g' | sed 's/"$$$"/";"/g' | sed 's/"//g' > BX-BooksCorrected.txt
+
+â GET HDFS Started
+
+modify mapper and reducerâ€¦
+
+â PIG PART
+
+$ pig
+
+grunt>
+BookXRecords = LOAD '/user/vagrant/input2/BX-BooksCorrected.txt' USING PigStorage(';') AS (ISBN:chararray,BookTitle:chararray,BookAuthor:chararray,YearOfPublication:chararray,Publisher:chararray,ImageURLS:chararray,ImageURLM:chararray,ImageURLL:chararray);
+
+GroupByYear = GROUP BookXRecords BY YearOfPublication;
+
+CountByYear = FOREACH GroupByYear GENERATE CONCAT((chararray)$0,CONCAT(':',(chararray)COUNT($1)));
+
+STORE CountByYear INTO '/user/vagrant/output4/pig_output_bookx' USING PigStorage('t');
+
+
