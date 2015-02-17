@@ -61,6 +61,6 @@ GroupByYear = GROUP BookXRecords BY YearOfPublication;
 
 CountByYear = FOREACH GroupByYear GENERATE CONCAT((chararray)$0,CONCAT(':',(chararray)COUNT($1)));
 
-STORE CountByYear INTO '/user/vagrant/output4/pig_output_bookx' USING PigStorage('t');
+STORE CountByYear INTO '/user/vagrant/output4/pig_output_bookx' USING PigStorage('\t');
 
 
